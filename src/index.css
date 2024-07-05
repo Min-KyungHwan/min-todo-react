@@ -55,7 +55,7 @@ input[type="text"] {
 }
 body {
   width: 100%;
-  max-width: 68rem;
+  max-width: 136rem;
   margin: 0 auto;
   font:
     1.6rem/1.25 Arial,
@@ -155,6 +155,8 @@ body {
   box-shadow:
     0 2px 4px 0 rgba(0, 0, 0, 0.2),
     0 2.5rem 5rem 0 rgba(0, 0, 0, 0.1);
+  /* transform: scale(2);
+  transform-origin: top left; */
 }
 @media screen and (min-width: 550px) {
   .todoapp {
@@ -162,9 +164,9 @@ body {
   }
 }
 .todoapp > * {
-  max-width: 50rem;
+  /* max-width: 50rem;
   margin-left: auto;
-  margin-right: auto;
+  margin-right: auto; */
 }
 .todoapp > form {
   max-width: 100%;
@@ -294,3 +296,10 @@ body {
 .c-cb > input[type="checkbox"]:checked + label::after {
   opacity: 1;
 }
+
+
+        /* Flexbox styles for horizontal layout */
+        .flex-container {
+            display: flex;
+            gap: 2rem; /* Optional: adds space between the two divs */
+        }

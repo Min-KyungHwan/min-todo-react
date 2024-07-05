@@ -1,8 +1,17 @@
-import { useState } from "react";
+import { useState, useRef, useEffect  } from "react";
 import { nanoid } from "nanoid";
 import Form from "./components/Form";
+import FormTextarea from "./components/FormTextarea";
 import FilterButton from "./components/FilterButton";
 import Todo from "./components/Todo";
+
+function usePrevious(value) {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
+}
 
 //All 필터는 모든 할 일을 표시하므로, 모든 할 일에 대해 true를 반환합니다.
 //Active 필터는 completed 속성이 false인 할 일을 표시합니다.
@@ -79,14 +88,32 @@ function App(props) {
   const tasksNoun = taskList.length != 1 ? "tasks" : "task";
   const headingText = `${taskList.length} ${tasksNoun} remaining`;
 
+  const listHeadingRef = useRef(null);
+  const prevTaskLength = usePrevious(tasks.length);
+
+  useEffect(() => {
+    if(tasks.length - prevTaskLength === -1){
+      listHeadingRef.current.focus();
+    }
+  }, [tasks.length, prevTaskLength]);
+
   return (
     <div className="todoapp stack-large">
       <h1>Daily Work</h1>
+      <div class="flex-container">
+      <div id="min1" style={{width: '1000px'}}>
+      <FormTextarea />
+      </div>
+
+
+      <div id="min2" style={{width: '500px'}}>
       <Form addTask={addTask} />
       <div className="filters btn-group stack-exception">
         {filterList}
       </div>
-      <h2 id="list-heading">{headingText}</h2>
+      <h2 id="list-heading" tabIndex="-1" ref={listHeadingRef}>
+        {headingText}
+      </h2>
       <ul
         role="list"
         className="todo-list stack-large stack-exception"
@@ -94,6 +121,12 @@ function App(props) {
       >
         {taskList}
       </ul>
+      </div>
+
+
+
+
+      </div>
     </div>
   );
 }
