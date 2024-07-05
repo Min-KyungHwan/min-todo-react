@@ -4,6 +4,10 @@ function Todo(props) {
   const [isEditing, setEditing] = useState(false);
   const [newName, setNewName] = useState("");
 
+  const editFieldRef = useRef(null);
+  const editButtonRef = useRef(null);
+
+
   function handleChange(e) {
     setNewName(e.target.value);
   }
