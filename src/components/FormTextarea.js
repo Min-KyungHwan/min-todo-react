@@ -1,4 +1,4 @@
-function FormTextarea() {
+function FormTextarea(props) {
   return (
     <form>
       <h2 className="label-wrapper">
@@ -10,6 +10,7 @@ function FormTextarea() {
         name="text"
         cols="90"
         rows="25"
+        value={props.workInfo}
         // audotComplete="off"
       />
       <button type="submit" className="btn btn__primary btn__lg">

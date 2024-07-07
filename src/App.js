@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect  } from "react";
 import { nanoid } from "nanoid";
+import { getWorkInfo } from './api/todoApi.js';
 import Form from "./components/Form";
 import FormTextarea from "./components/FormTextarea";
 import FilterButton from "./components/FilterButton";
@@ -26,6 +27,7 @@ const FILTER_NAMES = Object.keys(FILTER_MAP);
 function App(props) {
   const [tasks, setTasks] = useState(props.tasks);
   const [filter, setFilter] = useState("All");
+  const [workInfo, setWorkInfo] = useState("데이터를 입력해주세요.");
 
   function addTask(name) {
     const newTask = { id: `todo-${nanoid()}`, name, completed: false };
@@ -92,6 +94,19 @@ function App(props) {
   const prevTaskLength = usePrevious(tasks.length);
 
   useEffect(() => {
+    const fetchWorkInfo = async () => {
+        try {
+          //const data = await getWorkInfo();
+          //setWorkInfo(data);
+          setWorkInfo('123123123123');
+        } catch (error) {
+          console.error('Failed to fetch workinfo', error);
+        }
+      };
+      fetchWorkInfo();
+  }, []);
+
+  useEffect(() => {
     if(tasks.length - prevTaskLength === -1){
       listHeadingRef.current.focus();
     }
@@ -102,7 +117,7 @@ function App(props) {
       <h1>Daily Work</h1>
       <div class="flex-container">
       <div id="min1" style={{width: '1000px'}}>
-      <FormTextarea />
+      <FormTextarea workInfo={workInfo} />
       </div>
 
 
