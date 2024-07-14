@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect  } from "react";
 import { nanoid } from "nanoid";
-import { getWorkInfo } from './api/todoApi.js';
+import { getWorkInfoApi, setWorkInfoApi } from './api/todoApi.js';
 import Form from "./components/Form";
 import FormTextarea from "./components/FormTextarea";
 import FilterButton from "./components/FilterButton";
@@ -28,6 +28,7 @@ function App(props) {
   const [tasks, setTasks] = useState(props.tasks);
   const [filter, setFilter] = useState("All");
   const [workInfo, setWorkInfo] = useState("데이터를 입력해주세요.");
+  const [workInfoSeq, setWorkInfoSeq] = useState("");
 
   function addTask(name) {
     const newTask = { id: `todo-${nanoid()}`, name, completed: false };
@@ -64,6 +65,16 @@ function App(props) {
     setTasks(editedTaskList);
   }
 
+  async function handleFormTextareaSubmit(submittedInfo) {
+    console.log("Submitted info:", submittedInfo);
+    try {
+      const result = await setWorkInfoApi(submittedInfo);
+      console.log("Server response: ", result);
+    } catch (error) {
+      console.error("Failed to set work info: ", error);
+    }
+  }
+
   const taskList = tasks
     .filter(FILTER_MAP[filter])
     .map((task) => (
@@ -96,9 +107,10 @@ function App(props) {
   useEffect(() => {
     const fetchWorkInfo = async () => {
         try {
-          //const data = await getWorkInfo();
-          //setWorkInfo(data);
-          setWorkInfo('123123123123');
+          const data = await getWorkInfoApi();
+          // console.log(data)
+          setWorkInfo(data.workInfo);
+          setWorkInfoSeq(data.workInfoSeq);
         } catch (error) {
           console.error('Failed to fetch workinfo', error);
         }
@@ -115,32 +127,31 @@ function App(props) {
   return (
     <div className="todoapp stack-large">
       <h1>Daily Work</h1>
-      <div class="flex-container">
-      <div id="min1" style={{width: '1000px'}}>
-      <FormTextarea workInfo={workInfo} />
-      </div>
+      <div className="flex-container">
+        <div id="min1" style={{width: '1000px'}}>
+          <FormTextarea 
+            workInfoSeq={workInfoSeq}
+            workInfo={workInfo}
+            onSubmit={handleFormTextareaSubmit} />
+        </div>
 
 
-      <div id="min2" style={{width: '500px'}}>
-      <Form addTask={addTask} />
-      <div className="filters btn-group stack-exception">
-        {filterList}
-      </div>
-      <h2 id="list-heading" tabIndex="-1" ref={listHeadingRef}>
-        {headingText}
-      </h2>
-      <ul
-        role="list"
-        className="todo-list stack-large stack-exception"
-        aria-labelledby="list-heading"
-      >
-        {taskList}
-      </ul>
-      </div>
-
-
-
-
+        <div id="min2" style={{width: '500px'}}>
+          <Form addTask={addTask} />
+          <div className="filters btn-group stack-exception">
+            {filterList}
+          </div>
+          <h2 id="list-heading" tabIndex="-1" ref={listHeadingRef}>
+            {headingText}
+          </h2>
+          <ul
+            role="list"
+            className="todo-list stack-large stack-exception"
+            aria-labelledby="list-heading"
+          >
+            {taskList}
+          </ul>
+        </div>
       </div>
     </div>
   );

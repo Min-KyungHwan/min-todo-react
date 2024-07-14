@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: 'https://api.exaple.com', // 기본 URL 설정
-  timeout: 1000, // 요청 타임아웃 설정
+  baseURL: 'http://localhost:8080/', // 기본 URL 설정
+  // timeout: 1000, // 요청 타임아웃 설정
   headers: {'X-Custom-Header': 'foobar'}
 });
 

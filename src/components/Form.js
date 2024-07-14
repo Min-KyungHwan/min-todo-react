@@ -3,19 +3,19 @@ import { useState } from "react";
 function Form(props) {
   const [name, setName] = useState("");
 
-  function handleSubmit(e){
+  function handleSubmit(e) {
     e.preventDefault();
 
     if(name === ""){
       alert("Work를 입력해주세요.");
       return;
     }
-      props.addTask(name);
-      setName("");
+    props.addTask(name);
+    setName("");
   }
 
   function handleChange(e) {
-    console.log(e.target.value);
+    // console.log(e.target.value);
     setName(e.target.value);
   }
   return (
