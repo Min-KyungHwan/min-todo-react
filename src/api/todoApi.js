@@ -11,13 +11,24 @@ export const getWorkInfoApi = async () => {
   }
 }
 
-//일과 상테 수정
+//일과 상세 수정
 export const setWorkInfoApi = async (submittedInfo) => {
   try {
     const response = await axiosInstance.post('/workInfo/setWorkInfo', submittedInfo);
     return response.data;
   } catch (error) {
-    console.error('Failed to modfy workInfo:', error);
+    console.error('Failed to modfy work info:', error);
+    throw error;
+  }
+}
+
+//일과 상세 등록
+export const addWorkInfoApi = async (submittedInfo) => {
+  try {
+    const response = await axiosInstance.post('/workInfo/addWorkInfo', submittedInfo);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to install work info:', error);
     throw error;
   }
 }

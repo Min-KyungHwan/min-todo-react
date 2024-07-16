@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect  } from "react";
 import { nanoid } from "nanoid";
-import { getWorkInfoApi, setWorkInfoApi } from './api/todoApi.js';
+import { getWorkInfoApi, setWorkInfoApi, addWorkInfoApi } from './api/todoApi.js';
 import Form from "./components/Form";
 import FormTextarea from "./components/FormTextarea";
 import FilterButton from "./components/FilterButton";
@@ -68,8 +68,13 @@ function App(props) {
   async function handleFormTextareaSubmit(submittedInfo) {
     console.log("Submitted info:", submittedInfo);
     try {
-      const result = await setWorkInfoApi(submittedInfo);
-      console.log("Server response: ", result);
+      if(submittedInfo.workInfoSeq){
+        const result = await setWorkInfoApi(submittedInfo);
+        console.log("Server response: ", result);
+      }else{
+        const result = await addWorkInfoApi(submittedInfo);
+        console.log("Server response: ", result);
+      }
     } catch (error) {
       console.error("Failed to set work info: ", error);
     }
@@ -108,9 +113,10 @@ function App(props) {
     const fetchWorkInfo = async () => {
         try {
           const data = await getWorkInfoApi();
-          // console.log(data)
-          setWorkInfo(data.workInfo);
-          setWorkInfoSeq(data.workInfoSeq);
+          if(data){
+            setWorkInfo(data.workInfo);
+            setWorkInfoSeq(data.workInfoSeq);
+          }
         } catch (error) {
           console.error('Failed to fetch workinfo', error);
         }
