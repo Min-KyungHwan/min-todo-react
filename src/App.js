@@ -75,6 +75,12 @@ function App(props) {
         const result = await addWorkInfoApi(submittedInfo);
         console.log("Server response: ", result);
       }
+
+      const data = await getWorkInfoApi();
+      if(data){
+        setWorkInfo(data.workInfo);
+        setWorkInfoSeq(data.workInfoSeq);
+      }
     } catch (error) {
       console.error("Failed to set work info: ", error);
     }
