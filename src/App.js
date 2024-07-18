@@ -5,6 +5,7 @@ import Form from "./components/Form";
 import FormTextarea from "./components/FormTextarea";
 import FilterButton from "./components/FilterButton";
 import Todo from "./components/Todo";
+import MyDatePicker from './components/datePicker/DatePicker.jsx';
 
 function usePrevious(value) {
   const ref = useRef();
@@ -141,6 +142,12 @@ function App(props) {
       <h1>Daily Work</h1>
       <div className="flex-container">
         <div id="min1" style={{width: '1000px'}}>
+          <MyDatePicker />
+          <h2 className="label-wrapper">
+            <label htmlFor="new-todo-input" className="label__lg">
+            What did you do?
+            </label>
+          </h2>
           <FormTextarea 
             workInfoSeq={workInfoSeq}
             workInfo={workInfo}

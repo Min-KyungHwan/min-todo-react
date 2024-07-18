@@ -22,11 +22,11 @@ function FormTextarea(props) {
     <form onSubmit={handleSubmit}>
       <input type="hidden" name="workInfoSeq" value={props.workInfoSeq} />
 
-      <h2 className="label-wrapper">
+      {/* <h2 className="label-wrapper">
         <label htmlFor="new-todo-input" className="label__lg">
         What did you do?
         </label>
-      </h2>
+      </h2> */}
 
       <textarea
         name="workInfo"
