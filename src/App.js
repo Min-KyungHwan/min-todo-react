@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect  } from "react";
 import { nanoid } from "nanoid";
-import { getWorkInfoApi, setWorkInfoApi, addWorkInfoApi } from './api/todoApi.js';
+import { getWorkInfoApi, setWorkInfoApi, addWorkInfoApi, getTodoListApi, addTodoListApi, delTodoApi } from './api/todoApi.js';
 import Form from "./components/Form";
 import FormTextarea from "./components/FormTextarea";
 import FilterButton from "./components/FilterButton";
@@ -31,9 +31,17 @@ function App(props) {
   const [workInfo, setWorkInfo] = useState("데이터를 입력해주세요.");
   const [workInfoSeq, setWorkInfoSeq] = useState("");
 
-  function addTask(name) {
-    const newTask = { id: `todo-${nanoid()}`, name, completed: false };
-    setTasks([...tasks, newTask]);
+  async function addTask(submittedTodo) {
+    // const newTask = { id: `todo-${nanoid()}`, name, completed: false };
+    // setTasks([...tasks, newTask]);
+    try {
+      const result = await addTodoListApi(submittedTodo);
+      console.log("Server response : ", result);
+      const data = await getTodoListApi();
+      setTasks(data);
+    } catch (error) {
+      console.error("Failed to set todo : ", error);
+    }
   }
 
   function toggleTaskCompleted(id) {
@@ -49,9 +57,18 @@ function App(props) {
     setTasks(updatedTasks);
   }
 
-  function deleteTask(id){
-    const remainingTasks = tasks.filter((task) => id !== task.id);
-    setTasks(remainingTasks);
+  async function deleteTask(submittedTodo){
+    // const remainingTasks = tasks.filter((task) => id !== task.id);
+    // setTasks(remainingTasks);
+    try {
+      const result = await delTodoApi(submittedTodo);
+      console.log("Server response : ", result);
+      const data = await getTodoListApi();
+      setTasks(data);
+
+    } catch (error) {
+      console.error("Failed to del todo : ", error)
+    }
   }
 
   function editTask(id, newName) {
@@ -91,10 +108,10 @@ function App(props) {
     .filter(FILTER_MAP[filter])
     .map((task) => (
     <Todo 
-      id={task.id} 
-      name={task.name} 
-      completed={task.completed}
-      key={task.id}
+      id={task.workTodoSeq} 
+      name={task.todoNm} 
+      completed={task.status}
+      key={task.workTodoSeq}
       toggleTaskCompleted={toggleTaskCompleted}
       deleteTask={deleteTask}
       editTask={editTask}
@@ -125,11 +142,26 @@ function App(props) {
             setWorkInfoSeq(data.workInfoSeq);
           }
         } catch (error) {
-          console.error('Failed to fetch workinfo', error);
+          console.error('Failed to fetch work info', error);
         }
       };
       fetchWorkInfo();
   }, []);
+
+  useEffect(() => {
+    const fetchWorkTodo = async () => {
+        try {
+          const data = await getTodoListApi();
+          if(data){
+            setTasks(data);
+          }
+        } catch (error) {
+          console.error('Failed to fetch work todo list', error);
+        }
+      };
+      fetchWorkTodo();
+  }, []);
+
 
   useEffect(() => {
     if(tasks.length - prevTaskLength === -1){
@@ -142,12 +174,14 @@ function App(props) {
       <h1>Daily Work</h1>
       <div className="flex-container">
         <div id="min1" style={{width: '1000px'}}>
-          <MyDatePicker />
-          <h2 className="label-wrapper">
-            <label htmlFor="new-todo-input" className="label__lg">
-            What did you do?
-            </label>
-          </h2>
+          <div className="horizontal-layout">
+            <MyDatePicker />
+            <h2 className="label-wrapper">
+              <label htmlFor="new-todo-input" className="label__lg">
+              What did you do?
+              </label>
+            </h2>
+          </div>
           <FormTextarea 
             workInfoSeq={workInfoSeq}
             workInfo={workInfo}

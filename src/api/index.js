@@ -3,7 +3,10 @@ import axios from 'axios';
 const instance = axios.create({
   baseURL: 'http://localhost:8080/', // 기본 URL 설정
   // timeout: 1000, // 요청 타임아웃 설정
-  headers: {'X-Custom-Header': 'foobar'}
+  headers: {
+    'X-Custom-Header': 'foobar',
+    'Content-Type': 'application/json' // Content-Type 설정
+  }
 });
 
 // 요청 인터셉터

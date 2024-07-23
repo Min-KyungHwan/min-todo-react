@@ -297,9 +297,14 @@ body {
   opacity: 1;
 }
 
+/* Flexbox styles for horizontal layout */
+.flex-container {
+    display: flex;
+    gap: 2rem; /* Optional: adds space between the two divs */
+}
 
-        /* Flexbox styles for horizontal layout */
-        .flex-container {
-            display: flex;
-            gap: 2rem; /* Optional: adds space between the two divs */
-        }
+.horizontal-layout {
+  display: flex;
+  align-items: center;
+  width: 600px;
+}

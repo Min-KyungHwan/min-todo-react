@@ -10,7 +10,9 @@ function Form(props) {
       alert("Work를 입력해주세요.");
       return;
     }
-    props.addTask(name);
+    const formData = new FormData(e.target);
+    const formValues = Object.fromEntries(formData.entries());
+    props.addTask(formValues);
     setName("");
   }
 
@@ -29,7 +31,7 @@ function Form(props) {
         type="text"
         id="new-todo-input"
         className="input input__lg"
-        name="text"
+        name="todoNm"
         audotComplete="off"
         value={name}
         onChange={handleChange}
