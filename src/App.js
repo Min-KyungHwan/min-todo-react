@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect  } from "react";
 import { nanoid } from "nanoid";
-import { getWorkInfoApi, setWorkInfoApi, addWorkInfoApi, getTodoListApi, addTodoListApi, delTodoApi } from './api/todoApi.js';
+import { getWorkInfoApi, setWorkInfoApi, addWorkInfoApi, getTodoListApi, addTodoApi, delTodoApi, setTodoApi } from './api/todoApi.js';
 import Form from "./components/Form";
 import FormTextarea from "./components/FormTextarea";
 import FilterButton from "./components/FilterButton";
@@ -20,8 +20,8 @@ function usePrevious(value) {
 //Completed 필터는 completed 속성이 true인 할 일을 표시합니다.
 const FILTER_MAP = {
   All: () => true,
-  Active: (task) => !task.completed,
-  Completed: (task) => task.completed,
+  Active: (task) => !task.status,
+  Completed: (task) => task.status,
 }
 const FILTER_NAMES = Object.keys(FILTER_MAP);
 
@@ -35,7 +35,7 @@ function App(props) {
     // const newTask = { id: `todo-${nanoid()}`, name, completed: false };
     // setTasks([...tasks, newTask]);
     try {
-      const result = await addTodoListApi(submittedTodo);
+      const result = await addTodoApi(submittedTodo);
       console.log("Server response : ", result);
       const data = await getTodoListApi();
       setTasks(data);
@@ -44,17 +44,27 @@ function App(props) {
     }
   }
 
-  function toggleTaskCompleted(id) {
+  async function toggleTaskCompleted(id) {
+    var status = false;
     const updatedTasks = tasks.map((task) => {
-      // if this task has the same ID as the edited task
-      if(id === task.id){
-        // use object spread to make a new object
-        // whose `completed` props has been inverted
-        return { ...task, completed: !task.completed };
+      if(id === task.workTodoSeq){
+        status = !task.status;
       }
-      return task;
     })
-    setTasks(updatedTasks);
+
+    const submittedTodo = {
+      workTodoSeq : id,
+      status : status
+    };
+    try {
+      const result = await setTodoApi(submittedTodo);
+      console.log("Server response : ", result);
+      const data = await getTodoListApi();
+      setTasks(data);
+    } catch (error) {
+      console.error("Failed to set todo : ", error)
+    }
+
   }
 
   async function deleteTask(submittedTodo){
@@ -71,16 +81,35 @@ function App(props) {
     }
   }
 
-  function editTask(id, newName) {
-    const editedTaskList = tasks.map((task) => {
-      // 이 할 일이 편집된 작업과 동일한 ID를 갖는 경우
-      if(id === task.id){
-        //
-        return { ...task, name: newName };
+  async function editTask(id, newName) {
+    // const editedTaskList = tasks.map((task) => {
+    //   // 이 할 일이 편집된 작업과 동일한 ID를 갖는 경우
+    //   if(id === task.id){
+    //     return { ...task, name: newName };
+    //   }
+    //   return task;
+    // });
+    // setTasks(editedTaskList);
+    var status = false;
+    const updatedTasks = tasks.map((task) => {
+      if(id === task.workTodoSeq){
+        status = task.status;
       }
-      return task;
-    });
-    setTasks(editedTaskList);
+    })
+
+    const submittedTodo = {
+      workTodoSeq : id,
+      todoNm : newName,
+      status : status
+    };
+    try {
+      const result = await setTodoApi(submittedTodo);
+      console.log("Server response : ", result);
+      const data = await getTodoListApi();
+      setTasks(data);
+    } catch (error) {
+      console.error("Failed to set todo : ", error)
+    }
   }
 
   async function handleFormTextareaSubmit(submittedInfo) {
